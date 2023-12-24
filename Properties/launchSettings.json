@@ -5,17 +5,19 @@
       "launchBrowser": true,
       "launchUrl": "swagger",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "DATABASE_DIENTECITOS": "Server=localhost\\SQLEXPRESS;Database=CentroOdontologico;Trusted_Connection=True;"
       },
       "dotnetRunMessages": true,
-      "applicationUrl": "https://localhost:7280;http://localhost:5283"
+      "applicationUrl": "https://localhost:5000"
     },
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
       "launchUrl": "swagger",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "DATABASE_DIENTECITOS": "Server=localhost\\SQLEXPRESS;Database=CentroOdontologico;Trusted_Connection=True;"
       }
     },
     "Docker": {
@@ -23,7 +25,8 @@
       "launchBrowser": true,
       "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/swagger",
       "environmentVariables": {
-        "ASPNETCORE_URLS": "https://+:443;http://+:80"
+        "ASPNETCORE_URLS": "https://+:443;http://+:80",
+        "DATABASE_DIENTECITOS": "Server=localhost\\SQLEXPRESS;Database=CentroOdontologico;Trusted_Connection=True;"
       },
       "publishAllPorts": true,
       "useSSL": true
@@ -34,7 +37,7 @@
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "http://localhost:28499",
+      "applicationUrl": "http://localhost:5000",
       "sslPort": 44318
     }
   }
