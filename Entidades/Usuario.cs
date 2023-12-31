@@ -87,13 +87,21 @@ namespace Dientecitos_BackEnd.Entidades
 
         public bool ValidarCedula()
         {
-            return Cedula != null &&
-               Cedula.Length > 0 &&
-               Cedula.Length == 10 &&
-               int.Parse(Cedula[..2]) >= 1 &&
-               int.Parse(Cedula[..2]) <= 24 &&
-               int.Parse(Cedula.Substring(2, 1)) < 6 &&
-               int.Parse(Cedula[..9]) % 11 == int.Parse(Cedula[9..]);
+            if (cedula.Length != 10 || !cedula.All(char.IsDigit))
+            {
+                return false;
+            }
+
+            int[] digitos = cedula.Take(9).Select(c => c - '0').ToArray();
+            int digitoVerificador = int.Parse(cedula[9].ToString());
+
+            int sumaPares = digitos.Where((d, i) => i % 2 == 1).Sum();
+            int sumaImpares = digitos.Where((d, i) => i % 2 == 0).Sum();
+            int total = sumaPares + sumaImpares * 3;
+            int residuo = total % 10;
+            int digitoCalculado = (residuo == 0) ? 0 : 10 - residuo;
+
+            return digitoCalculado == digitoVerificador;
         }
 
         //public void Dispose()
