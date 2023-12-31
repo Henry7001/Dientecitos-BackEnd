@@ -3,6 +3,7 @@ using Dientecitos_BackEnd.Entidades;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 
 namespace Dientecitos_BackEnd.Controllers
@@ -21,11 +22,26 @@ namespace Dientecitos_BackEnd.Controllers
             [BindRequired][FromQuery] RolesEnum Rol
         )
         {
-            MapeoDatosUsuario DatosUsuario = new();
+            try
+            {
+                MapeoDatosUsuario DatosUsuario = new();
 
-            Usuario response= DatosUsuario.GrabarUsuario(registro, Rol);
+                bool validar = registro.Validar();
 
-            return response;
+                if (!validar) throw new Exception("Verifique la información a ingresar");
+
+                Usuario response = DatosUsuario.GrabarUsuario(registro, Rol);
+
+                return response;
+            }
+            catch (Exception e)
+            {
+                Error Error = new()
+                {
+                    error= e.Message,
+                };
+                return BadRequest(JsonConvert.SerializeObject(Error));
+            }
         }
     }
 }

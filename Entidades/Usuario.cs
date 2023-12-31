@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Dientecitos_BackEnd.Entidades
 {
@@ -58,6 +59,25 @@ namespace Dientecitos_BackEnd.Entidades
         public string? Contraseña { get; set; }
 
         private bool disposed = false;
+
+        public bool Validar()
+        {
+            return ValidarCedula() && 
+                Nombre != null && Nombre?.Length == 50 &&
+                Contraseña != null && Contraseña?.Length > 8 &&
+                Telefono != null && Telefono?.Length == 10;
+        }
+
+        private Boolean ValidarCedula()
+        {
+            return Cedula != null &&
+               Cedula.Length > 0 &&
+               Cedula.Length == 10 &&
+               int.Parse(Cedula[..2]) >= 1 &&
+               int.Parse(Cedula[..2]) <= 24 &&
+               int.Parse(Cedula.Substring(2, 1)) < 6 &&
+               int.Parse(Cedula[..9]) % 11 == int.Parse(Cedula[9..]);
+        }
 
         public void Dispose()
         {
