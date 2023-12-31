@@ -67,3 +67,38 @@ END;
 GO
 
 
+--------------------------------------------------------------------------
+
+-- Procedimiento almacenado para obtener historial de un paciente
+CREATE PROCEDURE ObtenerHistorialPaciente
+	@PacienteID INT
+AS
+BEGIN
+	SELECT
+		cm.CitaMedicaID,
+		cm.TipoTratamientoID,
+		tt.NombreTratamiento,
+		cm.MedicoID,
+		u.Nombre,
+		cm.FechaHoraCita,
+		cm.Observaciones,
+		cm.Diagnostico,
+		cm.Estado
+	FROM
+		CitaMedica cm
+	INNER JOIN
+		TipoTratamiento tt ON cm.TipoTratamientoID = tt.TipoTratamientoID
+	INNER JOIN
+		Medico m ON cm.MedicoID = m.MedicoID
+	INNER JOIN
+		Usuario u ON m.UsuarioID = u.UsuarioID
+	WHERE
+		cm.PacienteID = @PacienteID
+		AND cm.Estado = 'Finalizada'
+	ORDER BY
+		cm.FechaHoraCita DESC;
+END;
+
+
+GO
+

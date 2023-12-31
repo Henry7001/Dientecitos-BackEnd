@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System.ComponentModel.DataAnnotations;
 using System.Security.Cryptography.X509Certificates;
 
 namespace Dientecitos_BackEnd.Entidades
@@ -7,6 +8,7 @@ namespace Dientecitos_BackEnd.Entidades
     {
         [JsonProperty("usuarioID")]
         public int UsuarioID { get; set; }
+
         [JsonProperty("cedula")]
         public string? Cedula { get; set; }
         [JsonProperty("nombre")]
@@ -47,28 +49,43 @@ namespace Dientecitos_BackEnd.Entidades
 
     }
 
-    public class NuevoUsuario : IDisposable
+    public class NuevoUsuario //: IDisposable
     {
         [JsonProperty("cedula")]
-        public string? Cedula { get; set; }
+        [Required(ErrorMessage = "La cédula no puede ser nula.")]
+        [RegularExpression("^\\d{10}$", ErrorMessage = "La cédula debe contener 10 dígitos numéricos.")]
+        public string Cedula { get; set; }
+
+
         [JsonProperty("nombre")]
-        public string? Nombre { get; set; }
+        [Required(ErrorMessage = "El nombre no puede ser nulo.")]
+        [StringLength(50, ErrorMessage = "El nombre deben contener máximo 50 caracteres.")]
+        public string Nombre { get; set; }
+
+
         [JsonProperty("telefono")]
-        public string? Telefono { get; set; }
+        [Required(ErrorMessage = "El teléfono no puede ser nulo.")]
+        [RegularExpression("^\\d{10}$", ErrorMessage = "El teléfono debe contener 10 dígitos numéricos.")]
+        public string Telefono { get; set; }
+
+
         [JsonProperty("contraseña")]
-        public string? Contraseña { get; set; }
+        [Required(ErrorMessage = "La contraseña no puede ser nula.")]
+        [MinLength(8, ErrorMessage = "La contraseña debe contener mínimo 8 caracteres.")]
+        [MaxLength(16, ErrorMessage = "La contraseña debe contener máximo 16 caracteres.")]
+        public string Contraseña { get; set; }
 
-        private bool disposed = false;
+        //private bool disposed = false;
 
-        public bool Validar()
-        {
-            return ValidarCedula() && 
-                Nombre != null && Nombre?.Length == 50 &&
-                Contraseña != null && Contraseña?.Length > 8 &&
-                Telefono != null && Telefono?.Length == 10;
-        }
+        //public bool Validar()
+        //{
+        //    return ValidarCedula() && 
+        //        Nombre != null && Nombre?.Length == 50 &&
+        //        Contraseña != null && Contraseña?.Length > 8 &&
+        //        Telefono != null && Telefono?.Length == 10;
+        //}
 
-        private Boolean ValidarCedula()
+        public bool ValidarCedula()
         {
             return Cedula != null &&
                Cedula.Length > 0 &&
@@ -79,31 +96,31 @@ namespace Dientecitos_BackEnd.Entidades
                int.Parse(Cedula[..9]) % 11 == int.Parse(Cedula[9..]);
         }
 
-        public void Dispose()
-        {
-            Dispose(true);
-            System.GC.SuppressFinalize(this);
-        }
+        //public void Dispose()
+        //{
+        //    Dispose(true);
+        //    System.GC.SuppressFinalize(this);
+        //}
 
-        public void Dispose(bool disposing)
-        {
-            if (!disposed)
-            {
-                if (disposing)
-                {
-                    Cedula = null;
-                    Nombre = null;
-                    Telefono = null;
-                    Contraseña = null;
-                }
-                disposed = true;
-            }
-        }
+        //public void Dispose(bool disposing)
+        //{
+        //    if (!disposed)
+        //    {
+        //        if (disposing)
+        //        {
+        //            Cedula = null;
+        //            Nombre = null;
+        //            Telefono = null;
+        //            Contraseña = null;
+        //        }
+        //        disposed = true;
+        //    }
+        //}
 
-        ~NuevoUsuario()
-        {
-            Dispose(false);
-        }
+        //~NuevoUsuario()
+        //{
+        //    Dispose(false);
+        //}
 
     }
 }

@@ -48,9 +48,9 @@ namespace Dientecitos_BackEnd.Datos
                         throw new Exception("No se pudo insertar el usuario.");
                     }
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
-                    throw new Exception("Error al insertar el usuario: " + ex.Message);
+                    throw;
                 }
             }
 

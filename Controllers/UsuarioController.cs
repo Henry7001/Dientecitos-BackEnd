@@ -1,47 +1,43 @@
 using Dientecitos_BackEnd.Datos;
 using Dientecitos_BackEnd.Entidades;
+using Dientecitos_BackEnd.Middleware.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-
+using System.ComponentModel.DataAnnotations;
 
 namespace Dientecitos_BackEnd.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class UsuarioController : ControllerBase
+    public class UsuarioController : Controller
     {
+
         [HttpPost("/Dientecitos/Usuario")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ErrorResponse), 500)]
+        [ProducesResponseType(typeof(ErrorResponse), 400)]
+        [ProducesResponseType(typeof(Usuario), 200)] // Especifica el tipo de dato que retorna en caso de que sea un 200.
         public ActionResult<Usuario> Insertar(
-            [BindRequired][FromBody] NuevoUsuario registro,
-            [BindRequired][FromQuery] RolesEnum Rol
+            [FromBody] NuevoUsuario registro,
+            [FromQuery, Required] RolesEnum Rol
         )
         {
-            try
-            {
-                MapeoDatosUsuario DatosUsuario = new();
+            
+            MapeoDatosUsuario DatosUsuario = new();
 
-                bool validar = registro.Validar();
+            // Valida el modelo NuevoUsuario con todas las anotaciones del modelo y lanza la excepción en caso de que algo no sea válido.
+            Validator.ValidateObject(registro, new ValidationContext(registro), true); 
 
-                if (!validar) throw new Exception("Verifique la información a ingresar");
+            // Validar que la cedula no este registrada previamente por otro usuario, ya que se cae.
+            //...
 
-                Usuario response = DatosUsuario.GrabarUsuario(registro, Rol);
+            //bool validar = registro.ValidarCedula();
 
-                return response;
-            }
-            catch (Exception e)
-            {
-                Error Error = new()
-                {
-                    error= e.Message,
-                };
-                return BadRequest(JsonConvert.SerializeObject(Error));
-            }
+            //if (!validar) { throw new InvalidFieldException("Ingrese una cédula válida de Ecuador.");  }
+
+            Usuario response = DatosUsuario.GrabarUsuario(registro, Rol);
+
+            return Ok(response);
+            
         }
     }
 }
