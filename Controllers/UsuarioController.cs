@@ -1,5 +1,6 @@
 using Dientecitos_BackEnd.Datos;
 using Dientecitos_BackEnd.Entidades;
+using Dientecitos_BackEnd.Middleware.Exceptions.BadRequest;
 using Dientecitos_BackEnd.Middleware.Models;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -30,9 +31,9 @@ namespace Dientecitos_BackEnd.Controllers
             // Validar que la cedula no este registrada previamente por otro usuario, ya que se cae.
             //...
 
-            //bool validar = registro.ValidarCedula();
+            bool validar = registro.ValidarCedula();
 
-            //if (!validar) { throw new InvalidFieldException("Ingrese una cédula válida de Ecuador.");  }
+            if (!validar) { throw new InvalidFieldException("Ingrese una cédula válida de Ecuador.");  }
 
             Usuario response = DatosUsuario.GrabarUsuario(registro, Rol);
 

@@ -49,7 +49,7 @@ namespace Dientecitos_BackEnd.Entidades
 
     }
 
-    public class NuevoUsuario //: IDisposable
+    public class NuevoUsuario : IDisposable
     {
         [JsonProperty("cedula")]
         [Required(ErrorMessage = "La cédula no puede ser nula.")]
@@ -75,60 +75,62 @@ namespace Dientecitos_BackEnd.Entidades
         [MaxLength(16, ErrorMessage = "La contraseña debe contener máximo 16 caracteres.")]
         public string Contraseña { get; set; }
 
-        //private bool disposed = false;
-
-        //public bool Validar()
-        //{
-        //    return ValidarCedula() && 
-        //        Nombre != null && Nombre?.Length == 50 &&
-        //        Contraseña != null && Contraseña?.Length > 8 &&
-        //        Telefono != null && Telefono?.Length == 10;
-        //}
+        private bool disposed = false;
 
         public bool ValidarCedula()
         {
-            if (cedula.Length != 10 || !cedula.All(char.IsDigit))
+            int aux = 0, par = 0, impar = 0, verifi;
+            for (int i = 0; i < 9; i += 2)
             {
-                return false;
+                aux = 2 * int.Parse(Cedula[i].ToString());
+                if (aux > 9)
+                    aux -= 9;
+                par += aux;
+            }
+            for (int i = 1; i < 9; i += 2)
+            {
+                impar += int.Parse(Cedula[i].ToString());
             }
 
-            int[] digitos = cedula.Take(9).Select(c => c - '0').ToArray();
-            int digitoVerificador = int.Parse(cedula[9].ToString());
-
-            int sumaPares = digitos.Where((d, i) => i % 2 == 1).Sum();
-            int sumaImpares = digitos.Where((d, i) => i % 2 == 0).Sum();
-            int total = sumaPares + sumaImpares * 3;
-            int residuo = total % 10;
-            int digitoCalculado = (residuo == 0) ? 0 : 10 - residuo;
-
-            return digitoCalculado == digitoVerificador;
+            aux = par + impar;
+            if (aux % 10 != 0)
+            {
+                verifi = 10 - (aux % 10);
+            }
+            else
+                verifi = 0;
+            if (verifi == int.Parse(Cedula[9].ToString()))
+                return true;
+            else
+                return false;
         }
 
-        //public void Dispose()
-        //{
-        //    Dispose(true);
-        //    System.GC.SuppressFinalize(this);
-        //}
 
-        //public void Dispose(bool disposing)
-        //{
-        //    if (!disposed)
-        //    {
-        //        if (disposing)
-        //        {
-        //            Cedula = null;
-        //            Nombre = null;
-        //            Telefono = null;
-        //            Contraseña = null;
-        //        }
-        //        disposed = true;
-        //    }
-        //}
+        public void Dispose()
+        {
+            Dispose(true);
+            System.GC.SuppressFinalize(this);
+        }
 
-        //~NuevoUsuario()
-        //{
-        //    Dispose(false);
-        //}
+        public void Dispose(bool disposing)
+        {
+            if (!disposed)
+            {
+                if (disposing)
+                {
+                    Cedula = null;
+                    Nombre = null;
+                    Telefono = null;
+                    Contraseña = null;
+                }
+                disposed = true;
+            }
+        }
+
+        ~NuevoUsuario()
+        {
+            Dispose(false);
+        }
 
     }
 }
