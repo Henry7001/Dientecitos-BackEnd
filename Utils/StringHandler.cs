@@ -4,5 +4,12 @@
     {
         //ACCESS
         internal static string Database_String = "DATABASE_DIENTECITOS";
+
+        internal static string SP_TIPO_TRATAMIENTO = "GestionarTipoTratamiento";
+
+        internal static string SP_HORARIO_LABORAL = "GestionarHorarioLaboral";
+
+        internal static string SP_MEDICO = "GestionarMedicos";
+
     }
 }
