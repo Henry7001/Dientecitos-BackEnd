@@ -6,15 +6,16 @@ using System.Data;
 
 namespace Dientecitos_BackEnd.Datos
 {
-    public class MapeoDatosTipoTratamiento
+    public class MapeoDatosMedico
     {
 
         readonly SqlConnection connection = new(Environment.GetEnvironmentVariable(StringHandler.Database_String));
 
-        public TipoTratamiento GrabarTipoTratamiento(TipoTratamientoDAO request, int id)
+
+        public Medico GrabarMedico(MedicoDAO request, int id)
         {
 
-            TipoTratamiento response = new();
+            Medico response = new();
 
             using (connection)
             {
@@ -22,14 +23,13 @@ namespace Dientecitos_BackEnd.Datos
                 {
                     connection.Open();
 
-                    using SqlCommand command = new(StringHandler.SP_TIPO_TRATAMIENTO, connection);
+                    using SqlCommand command = new(StringHandler.SP_MEDICO, connection);
                     command.CommandType = CommandType.StoredProcedure;
 
                     command.Parameters.AddWithValue("@Accion", id == 0 ? "Insertar" : "Actualizar");
-                    command.Parameters.AddWithValue("@TipoTratamientoId", id);
-                    command.Parameters.AddWithValue("@NombreTratamiento", request.NombreTratamiento);
-                    command.Parameters.AddWithValue("@Descripcion", request.Descripcion);
-                    command.Parameters.AddWithValue("@CostoAsociado", request.CostoAsociado);
+                    command.Parameters.AddWithValue("@MedicoID", id);
+                    command.Parameters.AddWithValue("@UsuarioID", request.UsuarioID);
+                    command.Parameters.AddWithValue("@Especialidad", request.Especialidad);
                     command.Parameters.AddWithValue("@Estado", request.Estado);
 
                     using SqlDataReader reader = command.ExecuteReader();
@@ -42,17 +42,21 @@ namespace Dientecitos_BackEnd.Datos
                                 throw new BadRequestException(reader["Mensaje"].ToString() ?? "");
                             }
 
-                            response.TipoTratamientoID = reader["TipoTratamientoID"] != DBNull.Value ? Convert.ToInt32(reader["TipoTratamientoID"]) : 0;
-                            response.NombreTratamiento = reader["NombreTratamiento"] != DBNull.Value ? reader["NombreTratamiento"].ToString() : string.Empty;
-                            response.Descripcion = reader["Descripcion"] != DBNull.Value ? reader["Descripcion"].ToString() : string.Empty;
-                            response.CostoAsociado = reader["CostoAsociado"] != DBNull.Value ? Convert.ToDecimal(reader["CostoAsociado"]) : 0;
+                            response.MedicoID = reader["MedicoID"] != DBNull.Value ? Convert.ToInt32(reader["MedicoID"]) : 0;
+                            response.Especialidad = reader["Especialidad"] != DBNull.Value ? reader["Especialidad"].ToString() : string.Empty;
                             response.Estado = reader["Estado"] != DBNull.Value ? reader["Estado"].ToString() : string.Empty;
+
+                            if (reader["UsuarioID"] != DBNull.Value)
+                            {
+                                //response.Usuario = new MapeoDatosUsuario().ConsultarUsuario(Convert.ToInt32(reader["UsuarioID"]));
+                            }
+
                         }
                     }
                     else
                     {
                         connection.Close();
-                        throw new Exception("No se pudo grabar el tipo de tratamiento.");
+                        throw new Exception("No se pudo grabar el Medico.");
                     }
                 }
                 catch (Exception)
@@ -67,7 +71,7 @@ namespace Dientecitos_BackEnd.Datos
 
 
 
-        public MessageResponse EliminarTipoTratamiento(int id)
+        public MessageResponse EliminarMedico(int id)
         {
 
             MessageResponse response = new();
@@ -78,11 +82,11 @@ namespace Dientecitos_BackEnd.Datos
                 {
                     connection.Open();
 
-                    using SqlCommand command = new(StringHandler.SP_TIPO_TRATAMIENTO, connection);
+                    using SqlCommand command = new(StringHandler.SP_MEDICO, connection);
                     command.CommandType = CommandType.StoredProcedure;
 
                     command.Parameters.AddWithValue("@Accion", "Eliminar");
-                    command.Parameters.AddWithValue("@TipoTratamientoId", id);
+                    command.Parameters.AddWithValue("@MedicoID", id);
 
                     using SqlDataReader reader = command.ExecuteReader();
                     if (reader.HasRows)
@@ -95,13 +99,13 @@ namespace Dientecitos_BackEnd.Datos
                             }
 
                             response.Mensaje = reader["Mensaje"] != DBNull.Value ? reader["Mensaje"].ToString() : string.Empty;
-                            
+
                         }
                     }
                     else
                     {
                         connection.Close();
-                        throw new Exception("No se pudo grabar el tipo de tratamiento.");
+                        throw new Exception("No se pudo grabar el Medico.");
                     }
                 }
                 catch (Exception)
@@ -116,10 +120,10 @@ namespace Dientecitos_BackEnd.Datos
 
 
 
-        public List<TipoTratamiento> ConsultarTipoTratamiento(int id)
+        public List<Medico> ConsultarMedico(int id, string cedula)
         {
 
-            List<TipoTratamiento> response = new();
+            List<Medico> response = new();
 
             using (connection)
             {
@@ -127,13 +131,24 @@ namespace Dientecitos_BackEnd.Datos
                 {
                     connection.Open();
 
-                    using SqlCommand command = new(StringHandler.SP_TIPO_TRATAMIENTO, connection);
+                    using SqlCommand command = new(StringHandler.SP_MEDICO, connection);
                     command.CommandType = CommandType.StoredProcedure;
 
-                    command.Parameters.AddWithValue("@Accion", id == 0 ? "ConsultarTodos" : "ConsultarPorID");
-                    command.Parameters.AddWithValue("@TipoTratamientoId", id);
+                    string accion = string.Empty;
+
+                    accion = id switch
+                    {
+                        0 => "ConsultarTodos",
+                        -1 => "ConsultarPorCedula",
+                        _ => "ConsultarPorID",
+                    };
+
+                    command.Parameters.AddWithValue("@Accion", accion);
+                    command.Parameters.AddWithValue("@MedicoID", id);
+                    command.Parameters.AddWithValue("@Cedula", cedula);
 
                     using SqlDataReader reader = command.ExecuteReader();
+
                     if (reader.HasRows)
                     {
                         while (reader.Read())
@@ -143,22 +158,23 @@ namespace Dientecitos_BackEnd.Datos
                                 throw new BadRequestException(reader["Mensaje"].ToString() ?? "");
                             }
 
-                            TipoTratamiento tipoTratamiento = new TipoTratamiento
+                            Medico Medico = new Medico
                             {
-                                TipoTratamientoID = reader["TipoTratamientoID"] != DBNull.Value ? Convert.ToInt32(reader["TipoTratamientoID"]) : 0,
-                                NombreTratamiento = reader["NombreTratamiento"] != DBNull.Value ? reader["NombreTratamiento"].ToString() : string.Empty,
-                                Descripcion = reader["Descripcion"] != DBNull.Value ? reader["Descripcion"].ToString() : string.Empty,
-                                CostoAsociado = reader["CostoAsociado"] != DBNull.Value ? Convert.ToDecimal(reader["CostoAsociado"]) : 0,
-                                Estado = reader["Estado"] != DBNull.Value ? reader["Estado"].ToString() : string.Empty
+
+                                MedicoID = reader["MedicoID"] != DBNull.Value ? Convert.ToInt32(reader["MedicoID"]) : 0,
+                                Especialidad = reader["Especialidad"] != DBNull.Value ? reader["Especialidad"].ToString() : string.Empty,
+                                Estado = reader["Estado"] != DBNull.Value ? reader["Estado"].ToString() : string.Empty,
+                                //Usuario = reader["UsuarioID"] != DBNull.Value ? new MapeoDatosUsuario().ConsultarUsuario(Convert.ToInt32(reader["UsuarioID"])) : null
+
                             };
 
-                            response.Add(tipoTratamiento);
+                            response.Add(Medico);
                         }
                     }
                     else
                     {
                         connection.Close();
-                        throw new Exception("No se pudo grabar el tipo de tratamiento.");
+                        throw new Exception("No se pudo grabar el Medico.");
                     }
                 }
                 catch (Exception)

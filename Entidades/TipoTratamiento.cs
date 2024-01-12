@@ -1,4 +1,5 @@
 ﻿using Dientecitos_BackEnd.Middleware.Exceptions.BadRequest;
+using Dientecitos_BackEnd.Utils;
 using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
 
@@ -113,12 +114,7 @@ namespace Dientecitos_BackEnd.Entidades
                 throw new InvalidFieldException("El Costo Asociado del tratamiento debe ser mayor a 0.");
             }
 
-            if (!string.IsNullOrWhiteSpace(Estado) && 
-                (!Estado.Equals("A", StringComparison.OrdinalIgnoreCase) && 
-                !Estado.Equals("I", StringComparison.OrdinalIgnoreCase)))
-            {
-                throw new InvalidFieldException("El Estado debe ser A ó I.");
-            }
+            Utils.Utils.ValidarEstado(Estado);
 
         }
 

@@ -116,6 +116,24 @@ BEGIN
         END
 
 	-------------------------------------------------------------------------------------------
+        ELSE IF @Accion = 'ConsultarPorMedico'
+        BEGIN
+			-- Verificar si NO existe FK
+            IF NOT EXISTS (SELECT 1 FROM Medico WHERE MedicoID = @MedicoID AND Estado <> 'N')
+            BEGIN
+                -- Devolver mensaje error
+                SELECT 'Medico con ID '+ CAST(@MedicoID AS NVARCHAR(10)) +' no existe.' AS Mensaje;
+            END
+            ELSE
+            BEGIN
+				-- Realizar accion
+				SELECT * FROM HorarioLaboral 
+				WHERE MedicoID = @MedicoID
+				AND Estado <> 'N';
+			END
+        END
+
+	-------------------------------------------------------------------------------------------
         ELSE IF @Accion = 'ConsultarTodos'
         BEGIN
             -- Realizar accion

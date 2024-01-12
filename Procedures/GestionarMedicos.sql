@@ -6,6 +6,7 @@ CREATE OR ALTER PROCEDURE [dbo].[GestionarMedicos]
     @MedicoID INT = NULL,
 	@UsuarioID INT = NULL,
     @Especialidad VARCHAR(50) = NULL,
+	@Cedula VARCHAR(10) = NULL,
     @Estado CHAR(1) = NULL
 AS
 BEGIN
@@ -108,6 +109,29 @@ BEGIN
 				SELECT * FROM Medico 
 				WHERE MedicoID = @MedicoID
 				AND Estado <> 'N';
+			END
+        END
+
+	-------------------------------------------------------------------------------------------
+        ELSE IF @Accion = 'ConsultarPorCedula'
+        BEGIN
+			-- Verificar si NO existe
+            IF NOT EXISTS (SELECT 1 FROM Medico m INNER JOIN Usuario u 
+							ON m.UsuarioID = u.UsuarioID
+							WHERE u.Cedula = @Cedula
+							AND m.Estado <> 'N' AND u.Estado <> 'N')
+            BEGIN
+                -- Devolver mensaje error
+                SELECT 'Medico con cedula '+ @Cedula +' no existe.' AS Mensaje;
+            END
+            ELSE
+            BEGIN
+				-- Realizar accion
+				SELECT m.MedicoID, m.UsuarioID, m.Especialidad, m.Estado 
+				FROM Medico m INNER JOIN Usuario u 
+				ON m.UsuarioID = u.UsuarioID
+				WHERE u.Cedula = @Cedula
+				AND m.Estado <> 'N' AND u.Estado <> 'N';
 			END
         END
 
