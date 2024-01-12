@@ -60,6 +60,8 @@ BEGIN
 				Telefono = ISNULL(@Telefono, Telefono),
 				Rol = ISNULL(@Rol, Rol)
 			WHERE UsuarioID = @UsuarioID;
+
+			SELECT * FROM Usuario WHERE UsuarioID = @UsuarioID;
 		END
 	END
     ELSE IF @Accion = 'Eliminar'
@@ -95,7 +97,7 @@ BEGIN
 		ELSE
 		BEGIN
 			-- Si el usuario es válido, devolver la información de inicio de sesión
-			SELECT UsuarioID, Nombre, Rol
+			SELECT *
 			FROM Usuario
 			WHERE UsuarioID = @UsuarioEncontrado;
 		END
@@ -107,7 +109,7 @@ BEGIN
         SET Contraseña = CONVERT(VARBINARY(128), @NuevaContraseña)
         WHERE UsuarioID = @UsuarioID AND Contraseña = CONVERT(VARBINARY(128), @Contraseña);
     END
-	ELSE IF @Accion = ''
+	ELSE IF @Accion = 'ConsultarCitas'
 	BEGIN
 		SELECT
 		cm.CitaMedicaID,
