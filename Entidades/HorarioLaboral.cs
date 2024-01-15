@@ -103,12 +103,12 @@ namespace Dientecitos_BackEnd.Entidades
 
             if (MedicoID == null || MedicoID <= 0)
             {
-                throw new InvalidFieldException("El id del medico asociado es obligatorio.");
+                throw new InvalidFieldException("El ID del medico asociado es obligatorio.");
             }
             
             if (string.IsNullOrWhiteSpace(DiaSemana))
             {
-                throw new InvalidFieldException("Ell dia de la semana es obligatorio.");
+                throw new InvalidFieldException("El dia de la semana es obligatorio.");
             }
 
             ValidarDiaSemana();
@@ -127,7 +127,7 @@ namespace Dientecitos_BackEnd.Entidades
 
             ValidarDiaSemana();
 
-            Utils.Utils.ValidarEstado(Estado);
+            Utils.Utils.ValidarEstado(Estado ?? "");
 
         }
 

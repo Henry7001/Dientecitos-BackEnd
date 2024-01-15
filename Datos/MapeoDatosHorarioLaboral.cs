@@ -1,5 +1,6 @@
 ﻿using Dientecitos_BackEnd.Entidades;
 using Dientecitos_BackEnd.Middleware.Exceptions.BadRequest;
+using Dientecitos_BackEnd.Middleware.Exceptions.NotFound;
 using Dientecitos_BackEnd.Utils;
 using Microsoft.Data.SqlClient;
 using System.Data;
@@ -28,7 +29,7 @@ namespace Dientecitos_BackEnd.Datos
 
                     command.Parameters.AddWithValue("@Accion", id == 0 ? "Insertar" : "Actualizar");
                     command.Parameters.AddWithValue("@HorarioID", id);
-                    command.Parameters.AddWithValue("@DiaSemana", request.DiaSemana);
+                    command.Parameters.AddWithValue("@DiaSemana", Utils.Utils.ConvertirPrimeraLetraMayuscula(request.DiaSemana));
                     command.Parameters.AddWithValue("@HoraInicio", request.HoraInicio);
                     command.Parameters.AddWithValue("@HoraFin", request.HoraFin);
                     command.Parameters.AddWithValue("@Estado", request.Estado);
@@ -59,7 +60,7 @@ namespace Dientecitos_BackEnd.Datos
                     else
                     {
                         connection.Close();
-                        throw new Exception("No se pudo grabar el Horario.");
+                        throw new Exception("No se pudo realizar la accion sobre el Horario.");
                     }
                 }
                 catch (Exception)
@@ -108,7 +109,7 @@ namespace Dientecitos_BackEnd.Datos
                     else
                     {
                         connection.Close();
-                        throw new Exception("No se pudo grabar el Horario.");
+                        throw new Exception("No se pudo realizar la accion sobre el Horario.");
                     }
                 }
                 catch (Exception)
@@ -174,7 +175,7 @@ namespace Dientecitos_BackEnd.Datos
                     else
                     {
                         connection.Close();
-                        throw new Exception("No se pudo grabar el Horario.");
+                        throw new RegisterNotFoundException();
                     }
                 }
                 catch (Exception)

@@ -17,5 +17,19 @@ namespace Dientecitos_BackEnd.Utils
         }
 
 
+
+        public static string ConvertirPrimeraLetraMayuscula(string Cadena)
+        {
+
+            if (string.IsNullOrWhiteSpace(Cadena) || Cadena.Length < 1)
+            {
+                return Cadena;
+            }
+
+            return char.ToUpper(Cadena[0]) + Cadena[1..].ToLower();
+
+        }
+
+
     }
 }

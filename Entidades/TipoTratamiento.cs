@@ -114,7 +114,7 @@ namespace Dientecitos_BackEnd.Entidades
                 throw new InvalidFieldException("El Costo Asociado del tratamiento debe ser mayor a 0.");
             }
 
-            Utils.Utils.ValidarEstado(Estado);
+            Utils.Utils.ValidarEstado(Estado ?? "");
 
         }
 
