@@ -11,5 +11,7 @@
 
         internal static string SP_MEDICO = "GestionarMedicos";
 
+        internal static string SP_CITA_MEDICA = "GestionarCitaMedica";
+
     }
 }

@@ -105,7 +105,7 @@ namespace Dientecitos_BackEnd.Entidades
                 throw new InvalidFieldException("El ID del usuario asociado debe ser mayor a 0.");
             }
 
-            Utils.Utils.ValidarEstado(Estado);
+            Utils.Utils.ValidarEstado(Estado ?? "");
 
         }
 

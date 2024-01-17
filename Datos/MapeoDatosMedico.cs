@@ -1,5 +1,6 @@
 ﻿using Dientecitos_BackEnd.Entidades;
 using Dientecitos_BackEnd.Middleware.Exceptions.BadRequest;
+using Dientecitos_BackEnd.Middleware.Exceptions.NotFound;
 using Dientecitos_BackEnd.Utils;
 using Microsoft.Data.SqlClient;
 using System.Data;
@@ -56,7 +57,7 @@ namespace Dientecitos_BackEnd.Datos
                     else
                     {
                         connection.Close();
-                        throw new Exception("No se pudo grabar el Medico.");
+                        throw new Exception("No se pudo realizar la accion sobre el Medico.");
                     }
                 }
                 catch (Exception)
@@ -105,7 +106,7 @@ namespace Dientecitos_BackEnd.Datos
                     else
                     {
                         connection.Close();
-                        throw new Exception("No se pudo grabar el Medico.");
+                        throw new Exception("No se pudo realizar la accion sobre el Medico.");
                     }
                 }
                 catch (Exception)
@@ -174,7 +175,7 @@ namespace Dientecitos_BackEnd.Datos
                     else
                     {
                         connection.Close();
-                        throw new Exception("No se pudo grabar el Medico.");
+                        throw new RegisterNotFoundException();
                     }
                 }
                 catch (Exception)
