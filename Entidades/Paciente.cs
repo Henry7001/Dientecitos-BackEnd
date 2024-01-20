@@ -9,7 +9,7 @@ namespace Dientecitos_BackEnd.Entidades
         [JsonProperty("pacienteID")]
         public int PacienteID { get; set; }
         [JsonProperty("usuarioID")]
-        public int UsuarioID { get; set; }
+        public Usuario Usuario { get; set; }
         [JsonProperty("direccion")]
         public string? Direccion { get; set; }
         [JsonProperty("numeroContacto")]
@@ -32,7 +32,7 @@ namespace Dientecitos_BackEnd.Entidades
                 if (disposing)
                 {
                     PacienteID = 0;
-                    UsuarioID = 0;
+                    Usuario = null;
                     Direccion = null;
                     NumeroContacto = null;
                 }

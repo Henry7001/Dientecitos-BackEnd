@@ -49,7 +49,7 @@ namespace Dientecitos_BackEnd.Datos
 
                             if (reader["UsuarioID"] != DBNull.Value)
                             {
-                                //response.Usuario = new MapeoDatosUsuario().ConsultarUsuario(Convert.ToInt32(reader["UsuarioID"]));
+                                response.Usuario = new MapeoDatosUsuario().GetUsuarioByID(Convert.ToInt32(reader["UsuarioID"]));
                             }
 
                         }
@@ -165,7 +165,7 @@ namespace Dientecitos_BackEnd.Datos
                                 MedicoID = reader["MedicoID"] != DBNull.Value ? Convert.ToInt32(reader["MedicoID"]) : 0,
                                 Especialidad = reader["Especialidad"] != DBNull.Value ? reader["Especialidad"].ToString() : string.Empty,
                                 Estado = reader["Estado"] != DBNull.Value ? reader["Estado"].ToString() : string.Empty,
-                                //Usuario = reader["UsuarioID"] != DBNull.Value ? new MapeoDatosUsuario().ConsultarUsuario(Convert.ToInt32(reader["UsuarioID"])) : null
+                                Usuario = reader["UsuarioID"] != DBNull.Value ? new MapeoDatosUsuario().GetUsuarioByID(Convert.ToInt32(reader["UsuarioID"])) : null
 
                             };
 
