@@ -164,7 +164,7 @@ namespace Dientecitos_BackEnd.Datos
                             {
 
                                 PacienteID = reader["PacienteID"] != DBNull.Value ? Convert.ToInt32(reader["PacienteID"]) : 0,
-                                NumeroContacto = reader["NumeroContacto"] != DBNull.Value ? reader["NumeroContacto"].ToString() : 0,
+                                NumeroContacto = reader["NumeroContacto"] != DBNull.Value ? reader["NumeroContacto"].ToString() : string.Empty,
                                 Direccion = reader["Direccion"] != DBNull.Value ? reader["Direccion"].ToString() : string.Empty,
                                 Estado = reader["Estado"] != DBNull.Value ? reader["Estado"].ToString() : string.Empty,
                                 //Usuario = reader["UsuarioID"] != DBNull.Value ? new MapeoDatosUsuario().ConsultarUsuario(Convert.ToInt32(reader["UsuarioID"])) : null
