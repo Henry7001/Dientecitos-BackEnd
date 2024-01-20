@@ -57,7 +57,7 @@ namespace Dientecitos_BackEnd.Datos
             return response;
         }
 
-        public Usuario ActualizarUsuario(NuevoUsuario request, int id, RolesEnum rol)
+        public Usuario ActualizarUsuario(Usuario request)
         {
             Usuario response = new();
 
@@ -72,11 +72,11 @@ namespace Dientecitos_BackEnd.Datos
 
                     // Agregar parámetros del stored procedure
                     command.Parameters.AddWithValue("@Accion", "Actualizar");
-                    command.Parameters.AddWithValue("@UsuarioID", id);
+                    command.Parameters.AddWithValue("@UsuarioID", request.UsuarioID);
                     command.Parameters.AddWithValue("@Cedula", request.Cedula);
                     command.Parameters.AddWithValue("@Nombre", request.Nombre);
                     command.Parameters.AddWithValue("@Telefono", request.Telefono);
-                    command.Parameters.AddWithValue("@Rol", rol.ToString());
+                    command.Parameters.AddWithValue("@Rol", request.Rol);
 
                     using SqlDataReader reader = command.ExecuteReader();
                     if (reader.HasRows)
@@ -105,9 +105,9 @@ namespace Dientecitos_BackEnd.Datos
             return response;
         }
 
-        public Boolean EliminarUsuario(int id)
+        public MessageResponse EliminarUsuario(int id)
         {
-
+            MessageResponse response = new();
             using (connection)
             {
                 try
@@ -120,17 +120,19 @@ namespace Dientecitos_BackEnd.Datos
                     // Agregar parámetros del stored procedure
                     command.Parameters.AddWithValue("@Accion", "Eliminar");
                     command.Parameters.AddWithValue("@UsuarioID", id);
-
-                    return true;
+                    response.Mensaje = "Se ha eliminado el usuario";
+                    command.BeginExecuteNonQuery();
+                    return response;
                 }
                 catch (Exception)
                 {
-                    return false;
+                    response.Mensaje = "No se ha eliminado el usuario";
+                    return response;
                 }
             }
         }
 
-        public Usuario Login(String cedula, string contraseña)
+        public Usuario Login(Login login)
         {
             Usuario response = new();
 
@@ -145,8 +147,8 @@ namespace Dientecitos_BackEnd.Datos
 
                     // Agregar parámetros del stored procedure
                     command.Parameters.AddWithValue("@Accion", "IniciarSesion");
-                    command.Parameters.AddWithValue("@Cedula", cedula);
-                    command.Parameters.AddWithValue("@Contraseña", contraseña);
+                    command.Parameters.AddWithValue("@Cedula", login.Cedula);
+                    command.Parameters.AddWithValue("@Contraseña", login.Contraseña);
 
                     using SqlDataReader reader = command.ExecuteReader();
                     if (reader.HasRows)

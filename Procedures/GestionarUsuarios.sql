@@ -87,7 +87,8 @@ BEGIN
 
 		SELECT @UsuarioEncontrado = UsuarioID
 		FROM Usuario
-		WHERE Cedula = @Cedula AND Contraseña = CONVERT(VARBINARY(128), @Contraseña);
+		WHERE Cedula = @Cedula AND Contraseña = CONVERT(VARBINARY(128), @Contraseña)
+		AND Estado = 'A';
 
 		IF @UsuarioEncontrado IS NULL
 		BEGIN
