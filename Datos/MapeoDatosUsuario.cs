@@ -175,5 +175,94 @@ namespace Dientecitos_BackEnd.Datos
             return response;
         }
 
+        public Usuario GetUsuarioByID(int id)
+        {
+            Usuario response = new();
+
+            using (connection)
+            {
+                try
+                {
+                    connection.Open();
+
+                    using SqlCommand command = new("GestionarUsuario", connection);
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    // Agregar parámetros del stored procedure
+                    command.Parameters.AddWithValue("@Accion", "ConsultarPorId");
+                    command.Parameters.AddWithValue("@UsuarioID", id);
+
+                    using SqlDataReader reader = command.ExecuteReader();
+                    if (reader.HasRows)
+                    {
+                        while (reader.Read())
+                        {
+                            response.UsuarioID = reader["UsuarioID"] != DBNull.Value ? Convert.ToInt32(reader["UsuarioID"]) : 0;
+                            response.Cedula = reader["Cedula"] != DBNull.Value ? reader["Cedula"].ToString() : string.Empty;
+                            response.Nombre = reader["Nombre"] != DBNull.Value ? reader["Nombre"].ToString() : string.Empty;
+                            response.Telefono = reader["Telefono"] != DBNull.Value ? reader["Telefono"].ToString() : string.Empty;
+                            response.Rol = reader["Rol"] != DBNull.Value ? reader["Rol"].ToString() : string.Empty;
+                        }
+                    }
+                    else
+                    {
+                        connection.Close();
+                        throw new Exception("No se pudo buscar al usuario.");
+                    }
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+            }
+
+            return response;
+        }
+
+        public Usuario GetUsuarioByIDAndRol(int id, RolesEnum rol)
+        {
+            Usuario response = new();
+
+            using (connection)
+            {
+                try
+                {
+                    connection.Open();
+
+                    using SqlCommand command = new("GestionarUsuario", connection);
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    // Agregar parámetros del stored procedure
+                    command.Parameters.AddWithValue("@Accion", "ConsultarPacientePorId");
+                    command.Parameters.AddWithValue("@UsuarioID", id);
+                    command.Parameters.AddWithValue("@Rol", rol.ToString());
+
+                    using SqlDataReader reader = command.ExecuteReader();
+                    if (reader.HasRows)
+                    {
+                        while (reader.Read())
+                        {
+                            response.UsuarioID = reader["UsuarioID"] != DBNull.Value ? Convert.ToInt32(reader["UsuarioID"]) : 0;
+                            response.Cedula = reader["Cedula"] != DBNull.Value ? reader["Cedula"].ToString() : string.Empty;
+                            response.Nombre = reader["Nombre"] != DBNull.Value ? reader["Nombre"].ToString() : string.Empty;
+                            response.Telefono = reader["Telefono"] != DBNull.Value ? reader["Telefono"].ToString() : string.Empty;
+                            response.Rol = reader["Rol"] != DBNull.Value ? reader["Rol"].ToString() : string.Empty;
+                        }
+                    }
+                    else
+                    {
+                        connection.Close();
+                        throw new Exception("No se pudo buscar al usuario.");
+                    }
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+            }
+
+            return response;
+        }
+
     }
 }
