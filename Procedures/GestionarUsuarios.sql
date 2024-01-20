@@ -106,9 +106,5 @@ BEGIN
     BEGIN
 		Select * from Usuario WHERE UsuarioID = @UsuarioID;
     END
-    ELSE IF @Accion = 'ConsultarPacientePorId'
-    BEGIN
-		Select * from Usuario WHERE UsuarioID = @UsuarioID AND Rol = @Rol;
-    END
 END;
 GO
