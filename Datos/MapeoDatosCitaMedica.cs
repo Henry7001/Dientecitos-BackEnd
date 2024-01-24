@@ -64,7 +64,7 @@ namespace Dientecitos_BackEnd.Datos
 
                             if (reader["PacienteID"] != DBNull.Value)
                             {
-                                //response.Paciente = new MapeoDatosPaciente().ConsultarPaciente(Convert.ToInt32(reader["PacienteID"]))[0];
+                                response.Paciente = new MapeoDatosPaciente().ConsultarPaciente(Convert.ToInt32(reader["PacienteID"]), "")[0];
                             }
 
                         }
@@ -178,8 +178,8 @@ namespace Dientecitos_BackEnd.Datos
                                 Estado = reader["Estado"] != DBNull.Value ? reader["Estado"].ToString() : string.Empty,
 
                                 Medico = reader["MedicoID"] != DBNull.Value ? new MapeoDatosMedico().ConsultarMedico(Convert.ToInt32(reader["MedicoID"]), "")[0] : null,
-                                TipoTratamiento = reader["TipoTratamientoID"] != DBNull.Value ? new MapeoDatosTipoTratamiento().ConsultarTipoTratamiento(Convert.ToInt32(reader["TipoTratamientoID"]))[0] : null
-                                //Paciente = reader["PacienteID"] != DBNull.Value ? new MapeoDatosPacient().ConsultarPaciente(Convert.ToInt32(reader["PacienteID"]))[0] : null
+                                TipoTratamiento = reader["TipoTratamientoID"] != DBNull.Value ? new MapeoDatosTipoTratamiento().ConsultarTipoTratamiento(Convert.ToInt32(reader["TipoTratamientoID"]))[0] : null,
+                                Paciente = reader["PacienteID"] != DBNull.Value ? new MapeoDatosPaciente().ConsultarPaciente(Convert.ToInt32(reader["PacienteID"]), "")[0] : null
                             };
 
                             response.Add(CitaMedica);
