@@ -60,6 +60,8 @@ BEGIN
 				Telefono = ISNULL(@Telefono, Telefono),
 				Rol = ISNULL(@Rol, Rol)
 			WHERE UsuarioID = @UsuarioID;
+
+			SELECT * FROM Usuario WHERE UsuarioID = @UsuarioID;
 		END
 	END
     ELSE IF @Accion = 'Eliminar'
@@ -85,7 +87,8 @@ BEGIN
 
 		SELECT @UsuarioEncontrado = UsuarioID
 		FROM Usuario
-		WHERE Cedula = @Cedula AND Contraseña = CONVERT(VARBINARY(128), @Contraseña);
+		WHERE Cedula = @Cedula AND Contraseña = CONVERT(VARBINARY(128), @Contraseña)
+		AND Estado = 'A';
 
 		IF @UsuarioEncontrado IS NULL
 		BEGIN
@@ -95,43 +98,14 @@ BEGIN
 		ELSE
 		BEGIN
 			-- Si el usuario es válido, devolver la información de inicio de sesión
-			SELECT UsuarioID, Nombre, Rol
+			SELECT *
 			FROM Usuario
 			WHERE UsuarioID = @UsuarioEncontrado;
 		END
 	END
-    ELSE IF @Accion = 'CambiarContraseña'
+    ELSE IF @Accion = 'ConsultarPorId'
     BEGIN
-        -- Cambiar contraseña con conversión de contraseñas
-        UPDATE Usuario
-        SET Contraseña = CONVERT(VARBINARY(128), @NuevaContraseña)
-        WHERE UsuarioID = @UsuarioID AND Contraseña = CONVERT(VARBINARY(128), @Contraseña);
+		Select * from Usuario WHERE UsuarioID = @UsuarioID;
     END
-	ELSE IF @Accion = ''
-	BEGIN
-		SELECT
-		cm.CitaMedicaID,
-		cm.TipoTratamientoID,
-		tt.NombreTratamiento,
-		cm.MedicoID,
-		u.Nombre,
-		cm.FechaHoraCita,
-		cm.Observaciones,
-		cm.Diagnostico,
-		cm.Estado
-	FROM
-		CitaMedica cm
-	INNER JOIN
-		TipoTratamiento tt ON cm.TipoTratamientoID = tt.TipoTratamientoID
-	INNER JOIN
-		Medico m ON cm.MedicoID = m.MedicoID
-	INNER JOIN
-		Usuario u ON m.UsuarioID = u.UsuarioID
-	WHERE
-		cm.PacienteID = @PacienteID
-		AND cm.Estado = 'Finalizada'
-	ORDER BY
-		cm.FechaHoraCita DESC;
-	END
 END;
 GO

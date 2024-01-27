@@ -7,16 +7,16 @@ using System.Data;
 
 namespace Dientecitos_BackEnd.Datos
 {
-    public class MapeoDatosMedico
+    public class MapeoDatosPaciente
     {
 
         readonly SqlConnection connection = new(Environment.GetEnvironmentVariable(StringHandler.Database_String));
 
 
-        public Medico GrabarMedico(MedicoDAO request, int id)
+        public Paciente GrabarPaciente(PacienteDAO request, int id)
         {
 
-            Medico response = new();
+            Paciente response = new();
 
             using (connection)
             {
@@ -24,13 +24,13 @@ namespace Dientecitos_BackEnd.Datos
                 {
                     connection.Open();
 
-                    using SqlCommand command = new(StringHandler.SP_MEDICO, connection);
+                    using SqlCommand command = new(StringHandler.SP_PACIENTE, connection);
                     command.CommandType = CommandType.StoredProcedure;
 
                     command.Parameters.AddWithValue("@Accion", id == 0 ? "Insertar" : "Actualizar");
-                    command.Parameters.AddWithValue("@MedicoID", id);
+                    command.Parameters.AddWithValue("@PacienteID", id);
                     command.Parameters.AddWithValue("@UsuarioID", request.UsuarioID);
-                    command.Parameters.AddWithValue("@Especialidad", request.Especialidad);
+                    command.Parameters.AddWithValue("@Direccion", request.Direccion);
                     command.Parameters.AddWithValue("@Estado", request.Estado);
 
                     using SqlDataReader reader = command.ExecuteReader();
@@ -43,8 +43,9 @@ namespace Dientecitos_BackEnd.Datos
                                 throw new BadRequestException(reader["Mensaje"].ToString() ?? "");
                             }
 
-                            response.MedicoID = reader["MedicoID"] != DBNull.Value ? Convert.ToInt32(reader["MedicoID"]) : 0;
-                            response.Especialidad = reader["Especialidad"] != DBNull.Value ? reader["Especialidad"].ToString() : string.Empty;
+                            response.PacienteID = reader["PacienteID"] != DBNull.Value ? Convert.ToInt32(reader["PacienteID"]) : 0;
+                            response.Direccion = reader["Direccion"] != DBNull.Value ? reader["Direccion"].ToString() : string.Empty;
+                            response.NumeroContacto = reader["NumeroContacto"] != DBNull.Value ? reader["NumeroContacto"].ToString() : string.Empty;
                             response.Estado = reader["Estado"] != DBNull.Value ? reader["Estado"].ToString() : string.Empty;
 
                             if (reader["UsuarioID"] != DBNull.Value)
@@ -57,7 +58,7 @@ namespace Dientecitos_BackEnd.Datos
                     else
                     {
                         connection.Close();
-                        throw new Exception("No se pudo realizar la accion sobre el Medico.");
+                        throw new Exception("No se pudo realizar la accion sobre el Paciente.");
                     }
                 }
                 catch (Exception)
@@ -72,7 +73,7 @@ namespace Dientecitos_BackEnd.Datos
 
 
 
-        public MessageResponse EliminarMedico(int id)
+        public MessageResponse EliminarPaciente(int id)
         {
 
             MessageResponse response = new();
@@ -83,11 +84,11 @@ namespace Dientecitos_BackEnd.Datos
                 {
                     connection.Open();
 
-                    using SqlCommand command = new(StringHandler.SP_MEDICO, connection);
+                    using SqlCommand command = new(StringHandler.SP_PACIENTE, connection);
                     command.CommandType = CommandType.StoredProcedure;
 
                     command.Parameters.AddWithValue("@Accion", "Eliminar");
-                    command.Parameters.AddWithValue("@MedicoID", id);
+                    command.Parameters.AddWithValue("@PacienteID", id);
 
                     using SqlDataReader reader = command.ExecuteReader();
                     if (reader.HasRows)
@@ -106,7 +107,7 @@ namespace Dientecitos_BackEnd.Datos
                     else
                     {
                         connection.Close();
-                        throw new Exception("No se pudo realizar la accion sobre el Medico.");
+                        throw new Exception("No se pudo realizar la accion sobre el Paciente.");
                     }
                 }
                 catch (Exception)
@@ -121,10 +122,10 @@ namespace Dientecitos_BackEnd.Datos
 
 
 
-        public List<Medico> ConsultarMedico(int id, string cedula)
+        public List<Paciente> ConsultarPaciente(int id, string cedula)
         {
 
-            List<Medico> response = new();
+            List<Paciente> response = new();
 
             using (connection)
             {
@@ -132,7 +133,7 @@ namespace Dientecitos_BackEnd.Datos
                 {
                     connection.Open();
 
-                    using SqlCommand command = new(StringHandler.SP_MEDICO, connection);
+                    using SqlCommand command = new(StringHandler.SP_PACIENTE, connection);
                     command.CommandType = CommandType.StoredProcedure;
 
                     string accion = string.Empty;
@@ -145,7 +146,7 @@ namespace Dientecitos_BackEnd.Datos
                     };
 
                     command.Parameters.AddWithValue("@Accion", accion);
-                    command.Parameters.AddWithValue("@MedicoID", id);
+                    command.Parameters.AddWithValue("@PacienteID", id);
                     command.Parameters.AddWithValue("@Cedula", cedula);
 
                     using SqlDataReader reader = command.ExecuteReader();
@@ -159,17 +160,18 @@ namespace Dientecitos_BackEnd.Datos
                                 throw new BadRequestException(reader["Mensaje"].ToString() ?? "");
                             }
 
-                            Medico Medico = new Medico
+                            Paciente Paciente = new Paciente
                             {
 
-                                MedicoID = reader["MedicoID"] != DBNull.Value ? Convert.ToInt32(reader["MedicoID"]) : 0,
-                                Especialidad = reader["Especialidad"] != DBNull.Value ? reader["Especialidad"].ToString() : string.Empty,
+                                PacienteID = reader["PacienteID"] != DBNull.Value ? Convert.ToInt32(reader["PacienteID"]) : 0,
+                                NumeroContacto = reader["NumeroContacto"] != DBNull.Value ? reader["NumeroContacto"].ToString() : string.Empty,
+                                Direccion = reader["Direccion"] != DBNull.Value ? reader["Direccion"].ToString() : string.Empty,
                                 Estado = reader["Estado"] != DBNull.Value ? reader["Estado"].ToString() : string.Empty,
                                 Usuario = reader["UsuarioID"] != DBNull.Value ? new MapeoDatosUsuario().GetUsuarioByID(Convert.ToInt32(reader["UsuarioID"])) : null
 
                             };
 
-                            response.Add(Medico);
+                            response.Add(Paciente);
                         }
                     }
                     else

@@ -133,4 +133,75 @@ namespace Dientecitos_BackEnd.Entidades
         }
 
     }
+
+    public class Login : IDisposable
+    {
+        [JsonProperty("cedula")]
+        [Required(ErrorMessage = "La cédula no puede ser nula.")]
+        [RegularExpression("^\\d{10}$", ErrorMessage = "La cédula debe contener 10 dígitos numéricos.")]
+        public string Cedula { get; set; }
+
+
+        [JsonProperty("contraseña")]
+        [Required(ErrorMessage = "La contraseña no puede ser nula.")]
+        [MinLength(8, ErrorMessage = "La contraseña debe contener mínimo 8 caracteres.")]
+        [MaxLength(16, ErrorMessage = "La contraseña debe contener máximo 16 caracteres.")]
+        public string Contraseña { get; set; }
+
+        private bool disposed = false;
+
+        public bool ValidarCedula()
+        {
+            int aux = 0, par = 0, impar = 0, verifi;
+            for (int i = 0; i < 9; i += 2)
+            {
+                aux = 2 * int.Parse(Cedula[i].ToString());
+                if (aux > 9)
+                    aux -= 9;
+                par += aux;
+            }
+            for (int i = 1; i < 9; i += 2)
+            {
+                impar += int.Parse(Cedula[i].ToString());
+            }
+
+            aux = par + impar;
+            if (aux % 10 != 0)
+            {
+                verifi = 10 - (aux % 10);
+            }
+            else
+                verifi = 0;
+            if (verifi == int.Parse(Cedula[9].ToString()))
+                return true;
+            else
+                return false;
+        }
+
+
+        public void Dispose()
+        {
+            Dispose(true);
+            System.GC.SuppressFinalize(this);
+        }
+
+        public void Dispose(bool disposing)
+        {
+            if (!disposed)
+            {
+                if (disposing)
+                {
+                    Cedula = null;
+                    Contraseña = null;
+                }
+                disposed = true;
+            }
+        }
+
+        ~Login()
+        {
+            Dispose(false);
+        }
+
+    }
 }

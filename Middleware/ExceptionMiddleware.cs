@@ -92,7 +92,7 @@ namespace Dientecitos_BackEnd.Middleware
 
                 case SqlException ex:
                     response.StatusCode = 400;
-                    errorResponse.message = "Error de conexión con SQL Server.";
+                    errorResponse.message = ex.Message;
                     errorResponse.code = HttpStatusCode.BadRequest;
                     errorResponse.exception = ex.GetType().Name.ToString();
                     break;
